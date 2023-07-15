@@ -18,53 +18,113 @@ class Program
         {
             Console.WriteLine("What would you like to do?");
             Console.WriteLine("1. Add time entry");
-            Console.WriteLine("2. View all time entries");
-            Console.WriteLine("3. Exit");
+            Console.WriteLine("2. Add log out");
+            Console.WriteLine("3. View all time entries");
+            Console.WriteLine("4. Exit");
 
-            // string choice = Console.ReadLine();
+            string choice = Console.ReadLine();
 
-            if (choice == "1")
+            switch (choice)
             {
-                Console.WriteLine("Enter start time (YYYY-MM-DD HH:MM:SS):");
-                DateTime startTime = DateTime.Parse(Console.ReadLine());
+                case "1":
+                    AddTimeEntry(entries);
+                    break;
 
-                Console.WriteLine("Enter end time (YYYY-MM-DD HH:MM:SS):");
-                DateTime endTime = DateTime.Parse(Console.ReadLine());
+                case "2":
+                    AddLogOut(entries);
+                    break;
 
-                Console.WriteLine("Enter description:");
-                string description = Console.ReadLine();
+                case "3":
+                    ViewAllTimeEntries(entries);
+                    break;
 
-                TimeEntry entry = new TimeEntry
-                {
-                    StartTime = startTime,
-                    EndTime = endTime,
-                    Description = description
-                };
+                case "4":
+                    return;
 
-                entries.Add(entry);
-
-                Console.WriteLine("Time entry added.");
-            }
-            else if (choice == "2")
-            {
-                Console.WriteLine("Time entries:");
-
-                foreach (TimeEntry entry in entries)
-                {
-                    Console.WriteLine("Start time: {0}", entry.StartTime);
-                    Console.WriteLine("End time: {0}", entry.EndTime);
-                    Console.WriteLine("Description: {0}", entry.Description);
-                    Console.WriteLine();
-                }
-            }
-            else if (choice == "3")
-            {
-                break;
-            }
-            else
-            {
-                Console.WriteLine("Invalid choice.");
+                default:
+                    Console.WriteLine("Invalid choice.");
+                    break;
             }
         }
+    }
+
+    static void AddTimeEntry(List<TimeEntry> entries)
+    {
+        Console.WriteLine("Enter start time (YYYY-MM-DD HH:MM:SS):");
+        DateTime startTime = DateTime.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter description:");
+        string description = Console.ReadLine();
+
+        TimeEntry newEntry = new TimeEntry
+        {
+            StartTime = startTime,
+            Description = description
+        };
+
+        entries.Add(newEntry);
+
+        Console.WriteLine("Time of entry added.");
+    }
+
+    static void AddLogOut(List<TimeEntry> entries)
+    {
+
+        Console.WriteLine("Enter end time (YYYY-MM-DD HH:MM:SS):");
+        DateTime endTime = DateTime.Parse(Console.ReadLine());
+
+        Console.WriteLine("Enter description:");
+        string description = Console.ReadLine();
+
+        TimeEntry newEntry = new TimeEntry
+        {
+            EndTime = endTime,
+            Description = description
+        };
+
+        entries.Add(newEntry);
+
+        Console.WriteLine("Time of log out added.");
+    }
+
+    static void ViewAllTimeEntries(List<TimeEntry> entries)
+    {
+        Console.WriteLine("Time entries:");
+
+        foreach (TimeEntry entry in entries)
+        {
+            Console.WriteLine("Start time: {0}", entry.StartTime);
+            Console.WriteLine("Description: {0}", entry.Description);
+            Console.WriteLine("Entry: {0}", GetEntryStatus(entry.StartTime, entry.EndTime));;
+            Console.WriteLine();
+        }
+
+    }
+
+    static string GetEntryStatus(DateTime startTime, DateTime endTime)
+    {
+        string entryStatus = "";
+
+        if (startTime.TimeOfDay <= new TimeSpan(8, 0, 0))
+        {
+            entryStatus += "On time";
+        }
+        else
+        {
+            entryStatus += "Late";
+        }
+
+        entryStatus += " | ";
+
+        if (endTime.TimeOfDay <= new TimeSpan(16, 0, 0))
+        {
+            entryStatus += "On time";
+        }
+        else
+        {
+            entryStatus += "Overtime";
+        }
+
+        return entryStatus;
     }
 }
