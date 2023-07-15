@@ -5,8 +5,9 @@ class TimeEntry
 {
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public string? Description { get; set; }
+    public string Description { get; set; }
 }
+
 class Program
 {
     static void Main(string[] args)
@@ -20,7 +21,7 @@ class Program
             Console.WriteLine("2. View all time entries");
             Console.WriteLine("3. Exit");
 
-            string? choice = Console.ReadLine();
+            // string choice = Console.ReadLine();
 
             if (choice == "1")
             {
@@ -31,7 +32,7 @@ class Program
                 DateTime endTime = DateTime.Parse(Console.ReadLine());
 
                 Console.WriteLine("Enter description:");
-                string? description = Console.ReadLine();
+                string description = Console.ReadLine();
 
                 TimeEntry entry = new TimeEntry
                 {
