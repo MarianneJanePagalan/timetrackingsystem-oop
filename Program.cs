@@ -1,130 +1,139 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-class TimeEntry
+namespace TimeTrackingSystem
 {
-    public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
-    public string Description { get; set; }
-}
-
-class Program
-{
-    static void Main(string[] args)
+    class TimeEntry
     {
-        List<TimeEntry> entries = new List<TimeEntry>();
+        public DateTime StartTime { get; set; }
+        public string Description { get; set; }
+    }
 
-        while (true)
+    class LogOut
+    {
+        public DateTime EndTime { get; set; }
+        public string Description { get; set; }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
         {
-            Console.WriteLine("What would you like to do?");
-            Console.WriteLine("1. Add time entry");
-            Console.WriteLine("2. Add log out");
-            Console.WriteLine("3. View all time entries");
-            Console.WriteLine("4. Exit");
+            List<TimeEntry> entries = new List<TimeEntry>();
+            List<LogOut> logouts = new List<LogOut>();
 
-            string choice = Console.ReadLine();
-
-            switch (choice)
+            while (true)
             {
-                case "1":
-                    AddTimeEntry(entries);
-                    break;
+                Console.WriteLine("What would you like to do?");
+                Console.WriteLine("1. Record Time Entry");
+                Console.WriteLine("2. Access Time Entry Records");
+                Console.WriteLine("3. Perform Log Out");
+                Console.WriteLine("4. Review Log Out History");
+                Console.WriteLine("5. Exit");
 
-                case "2":
-                    AddLogOut(entries);
-                    break;
+                string choice = Console.ReadLine();
 
-                case "3":
-                    ViewAllTimeEntries(entries);
-                    break;
+                switch (choice)
+                {
+                    case "1":
+                        AddTimeEntry(entries);
+                        break;
 
-                case "4":
-                    return;
+                    case "2":
+                        ViewAllTimeEntries(entries);
+                        break;
 
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    break;
+                    case "3":
+                        AddLogOut(logouts);
+                        break;
+
+                    case "4":
+                        ViewAllLogOuts(logouts);
+                        break;
+
+                    case "5":
+                        return; // Exit the program
+
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
+                }
             }
         }
-    }
 
-    static void AddTimeEntry(List<TimeEntry> entries)
-    {
-        Console.WriteLine("Enter start time (YYYY-MM-DD HH:MM:SS):");
-        DateTime startTime = DateTime.Parse(Console.ReadLine());
-
-        Console.WriteLine("Enter description:");
-        string description = Console.ReadLine();
-
-        TimeEntry newEntry = new TimeEntry
+        static void AddTimeEntry(List<TimeEntry> entries)
         {
-            StartTime = startTime,
-            Description = description
-        };
+            Console.WriteLine("Enter start time (YYYY-MM-DD HH:MM:SS):");
+            DateTime startTime = DateTime.Parse(Console.ReadLine());
 
-        entries.Add(newEntry);
+            Console.WriteLine("Enter description:");
+            string description = Console.ReadLine();
 
-        Console.WriteLine("Time of entry added.");
-    }
+            TimeEntry newEntry = new TimeEntry
+            {
+                StartTime = startTime,
+                Description = description
+            };
 
-    static void AddLogOut(List<TimeEntry> entries)
-    {
+            entries.Add(newEntry);
 
-        Console.WriteLine("Enter end time (YYYY-MM-DD HH:MM:SS):");
-        DateTime endTime = DateTime.Parse(Console.ReadLine());
-
-        Console.WriteLine("Enter description:");
-        string description = Console.ReadLine();
-
-        TimeEntry newEntry = new TimeEntry
-        {
-            EndTime = endTime,
-            Description = description
-        };
-
-        entries.Add(newEntry);
-
-        Console.WriteLine("Time of log out added.");
-    }
-
-    static void ViewAllTimeEntries(List<TimeEntry> entries)
-    {
-        Console.WriteLine("Time entries:");
-
-        foreach (TimeEntry entry in entries)
-        {
-            Console.WriteLine("Start time: {0}", entry.StartTime);
-            Console.WriteLine("Description: {0}", entry.Description);
-            Console.WriteLine("Entry: {0}", GetEntryStatus(entry.StartTime, entry.EndTime));;
-            Console.WriteLine();
+            Console.WriteLine("Time entry added.");
         }
 
-    }
-
-    static string GetEntryStatus(DateTime startTime, DateTime endTime)
-    {
-        string entryStatus = "";
-
-        if (startTime.TimeOfDay <= new TimeSpan(8, 0, 0))
+        static void ViewAllTimeEntries(List<TimeEntry> entries)
         {
-            entryStatus += "On time";
-        }
-        else
-        {
-            entryStatus += "Late";
+            Console.WriteLine("Time entries:");
+
+            foreach (TimeEntry entry in entries)
+            {
+                Console.WriteLine("Start time: {0}", entry.StartTime);
+                Console.WriteLine("Description: {0}", entry.Description);
+                Console.WriteLine("Entry: {0}", GetEntryStatus(entry.StartTime));
+                Console.WriteLine();
+            }
         }
 
-        entryStatus += " | ";
-
-        if (endTime.TimeOfDay <= new TimeSpan(16, 0, 0))
+        static void AddLogOut(List<LogOut> logouts)
         {
-            entryStatus += "On time";
-        }
-        else
-        {
-            entryStatus += "Overtime";
+            Console.WriteLine("Enter end time (YYYY-MM-DD HH:MM:SS):");
+            DateTime endTime = DateTime.Parse(Console.ReadLine());
+
+            Console.WriteLine("Enter description:");
+            string description = Console.ReadLine();
+
+            LogOut newLogOut = new LogOut
+            {
+                EndTime = endTime,
+                Description = description
+            };
+
+            logouts.Add(newLogOut);
+
+            Console.WriteLine("Log out added.");
         }
 
-        return entryStatus;
+        static void ViewAllLogOuts(List<LogOut> logouts)
+        {
+            Console.WriteLine("Log outs:");
+
+            foreach (LogOut entry in logouts)
+            {
+                Console.WriteLine("End Time: {0}", entry.EndTime);
+                Console.WriteLine("Description: {0}", entry.Description);
+                Console.WriteLine("Log: {0}", GetLogOutStatus(entry.EndTime));
+                Console.WriteLine();
+            }
+        }
+
+        static string GetEntryStatus(DateTime startTime)
+        {
+            return startTime.TimeOfDay <= new TimeSpan(8, 0, 0) ? "On time" : "Late";
+        }
+
+        static string GetLogOutStatus(DateTime endTime)
+        {
+            return endTime.TimeOfDay <= new TimeSpan(16, 0, 0) ? "On time" : "Overtime";
+        }
     }
 }
+
